@@ -1,6 +1,6 @@
 {
-  "name": "@puere/tempograph",
-  "version": "0.3.0",
+  "name": "@purecore/tempograph",
+  "version": "0.1.0",
   "description": "",
   "keywords": [],
   "main": "dist/index.js",
@@ -16,10 +16,10 @@
   "files": [
     "dist"
   ],
-  "author": "Max Walker <maxwell.a.walker@gmail.com>",
+  "author": "Suissa <suissa@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SegFaultx64/typescript-graph"
+    "url": "https://github.com/suissa/typescript-temporal-graph"
   },
   "license": "MIT",
   "engines": {

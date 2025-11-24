@@ -82,13 +82,15 @@ describe('edgeMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
+      const now = 100
+
       // Edge 1: 10ms duration (10-20)
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       // Edge 2: 20ms duration (30-50)
-      graph.addTemporalEdge('A', 'B', 30, 50)
+      graph.addTemporalEdge('A', 'B', 30, undefined, 50)
 
       // Average: (10 + 20) / 2 = 15ms
-      expect(averageEdgeDurationBetween(graph, 'A', 'B')).toBe(15)
+      expect(averageEdgeDurationBetween(graph, 'A', 'B', now)).toBe(15)
     })
 
     it('should only consider edges between specified nodes', () => {
@@ -96,12 +98,14 @@ describe('edgeMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20) // 10ms
-      graph.addTemporalEdge('A', 'C', 30, 50) // 20ms (should be ignored)
-      graph.addTemporalEdge('A', 'B', 60, 80) // 20ms
+      const now = 100
+
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20) // 10ms
+      graph.addTemporalEdge('A', 'C', 30, undefined, 50) // 20ms (should be ignored)
+      graph.addTemporalEdge('A', 'B', 60, undefined, 80) // 20ms
 
       // Average: (10 + 20) / 2 = 15ms (only A->B edges)
-      expect(averageEdgeDurationBetween(graph, 'A', 'B')).toBe(15)
+      expect(averageEdgeDurationBetween(graph, 'A', 'B', now)).toBe(15)
     })
 
     it('should handle open intervals', () => {
@@ -111,9 +115,9 @@ describe('edgeMetrics', () => {
       const now = 100
 
       // Edge 1: closed (10-20 = 10ms)
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       // Edge 2: open (30-now = 70ms)
-      const edge2 = graph.addTemporalEdge('A', 'B', 30)
+      const edge2 = graph.addTemporalEdge('A', 'B', 30) // No deactivation
 
       // Average: (10 + 70) / 2 = 40ms
       expect(averageEdgeDurationBetween(graph, 'A', 'B', now)).toBe(40)
@@ -123,21 +127,25 @@ describe('edgeMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 30)
+      const now = 100
+
+      graph.addTemporalEdge('A', 'B', 10, undefined, 30)
 
       // Average: 20ms / 1 = 20ms
-      expect(averageEdgeDurationBetween(graph, 'A', 'B')).toBe(20)
+      expect(averageEdgeDurationBetween(graph, 'A', 'B', now)).toBe(20)
     })
 
     it('should not consider reverse direction', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20) // Should be counted
-      graph.addTemporalEdge('B', 'A', 30, 50) // Should be ignored
+      const now = 100
+
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20) // Should be counted
+      graph.addTemporalEdge('B', 'A', 30, undefined, 50) // Should be ignored
 
       // Average: 10ms / 1 = 10ms (only A->B)
-      expect(averageEdgeDurationBetween(graph, 'A', 'B')).toBe(10)
+      expect(averageEdgeDurationBetween(graph, 'A', 'B', now)).toBe(10)
     })
   })
 

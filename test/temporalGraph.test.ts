@@ -1,4 +1,4 @@
-import TemporalGraph from '../src/temporalGraph'
+import { TemporalGraph } from '../src/temporalGraph'
 
 describe('TemporalGraph', () => {
   let graph: TemporalGraph<any>
