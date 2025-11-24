@@ -34,9 +34,9 @@ describe('temporalMetrics', () => {
       graph.insertNode('C')
 
       // Edge active from 10 to 20
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       // Edge active from 15 to 25
-      graph.addTemporalEdge('B', 'C', 15, 25)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
 
       expect(activeEdgeCountAt(graph, 5)).toBe(0) // Before any edge
       expect(activeEdgeCountAt(graph, 12)).toBe(1) // Only first edge
@@ -69,7 +69,7 @@ describe('temporalMetrics', () => {
     it('should return 0 for empty interval', () => {
       graph.insertNode('A')
       graph.insertNode('B')
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
 
       expect(totalActiveTime(graph, 0, 5)).toBe(0)
     })
@@ -80,9 +80,9 @@ describe('temporalMetrics', () => {
       graph.insertNode('C')
 
       // Edge 1: 10-20 (10ms active)
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       // Edge 2: 15-25 (10ms active)
-      graph.addTemporalEdge('B', 'C', 15, 25)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
 
       // Window: 12-22
       // Edge 1: max(10,12) to min(20,22) = 12-20 = 8ms
@@ -97,7 +97,7 @@ describe('temporalMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
 
       // Window starts before edge: 5-15
       // Edge: max(10,5) to min(20,15) = 10-15 = 5ms
@@ -131,9 +131,9 @@ describe('temporalMetrics', () => {
       graph.insertNode('C')
 
       // Edge 1: 10-20 (10ms in window 5-25)
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       // Edge 2: 15-25 (10ms in window 5-25)
-      graph.addTemporalEdge('B', 'C', 15, 25)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
 
       // Window: 5-25
       // Edge 1: 10-20 = 10ms
@@ -146,7 +146,7 @@ describe('temporalMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
 
       // Window: 15-25, edge active 15-20 = 5ms
       expect(averageActiveDuration(graph, 15, 25)).toBe(5)
@@ -159,9 +159,9 @@ describe('temporalMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20) // Activation at 10
-      graph.addTemporalEdge('B', 'C', 15, 25) // Activation at 15
-      graph.addTemporalEdge('A', 'C', 25, 35) // Activation at 25
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20) // Activation at 10
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25) // Activation at 15
+      graph.addTemporalEdge('A', 'C', 25, undefined, 35) // Activation at 25
 
       expect(activationsInInterval(graph, 0, 5)).toBe(0)
       expect(activationsInInterval(graph, 10, 20)).toBe(2) // 10 and 15
@@ -173,7 +173,7 @@ describe('temporalMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
 
       expect(activationsInInterval(graph, 10, 10)).toBe(1)
       expect(activationsInInterval(graph, 10, 15)).toBe(1)
@@ -186,9 +186,9 @@ describe('temporalMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20) // Deactivation at 20
-      graph.addTemporalEdge('B', 'C', 15, 25) // Deactivation at 25
-      graph.addTemporalEdge('A', 'C', 30, 40) // Deactivation at 40
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20) // Deactivation at 20
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25) // Deactivation at 25
+      graph.addTemporalEdge('A', 'C', 30, undefined, 40) // Deactivation at 40
 
       expect(deactivationsInInterval(graph, 0, 5)).toBe(0)
       expect(deactivationsInInterval(graph, 18, 22)).toBe(1) // 20
@@ -218,7 +218,7 @@ describe('temporalMetrics', () => {
       graph.insertNode('B')
 
       // Edge active 10ms out of 20ms window = 0.5
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
 
       expect(graphAliveRatio(graph, 0, 20)).toBe(0.5)
     })
@@ -227,7 +227,7 @@ describe('temporalMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 0, 20)
+      graph.addTemporalEdge('A', 'B', 0, undefined, 20)
 
       expect(graphAliveRatio(graph, 0, 20)).toBe(1)
     })
@@ -239,8 +239,8 @@ describe('temporalMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 15, 25)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
 
       // At t=12: 1 edge active
       // At t=18: 2 edges active
@@ -253,8 +253,8 @@ describe('temporalMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 15, 25)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
 
       // At t=18: 2 edges active (A->B: 10-20, B->C: 15-25)
       // At t=22: check which edges are active
@@ -274,8 +274,8 @@ describe('temporalMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 15, 25)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
 
       const snapshot = temporalSnapshot(graph, 18)
 
@@ -295,8 +295,8 @@ describe('temporalMetrics', () => {
       graph.insertNode('C')
 
       // 2 edges in 1 minute (60000ms)
-      graph.addTemporalEdge('A', 'B', 0, 30000)
-      graph.addTemporalEdge('B', 'C', 10000, 40000)
+      graph.addTemporalEdge('A', 'B', 0, undefined, 30000)
+      graph.addTemporalEdge('B', 'C', 10000, undefined, 40000)
 
       // Window: 0-60000ms = 1 minute
       // 2 edges / 1 minute = 2 edges/min
@@ -309,7 +309,7 @@ describe('temporalMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       expect(activationRhythm(graph)).toBe(0)
     })
 
@@ -321,9 +321,9 @@ describe('temporalMetrics', () => {
       // Activations at: 10, 20, 30
       // Intervals: 10ms, 10ms
       // Average: 10ms
-      graph.addTemporalEdge('A', 'B', 10, 15)
-      graph.addTemporalEdge('B', 'C', 20, 25)
-      graph.addTemporalEdge('A', 'C', 30, 35)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 15)
+      graph.addTemporalEdge('B', 'C', 20, undefined, 25)
+      graph.addTemporalEdge('A', 'C', 30, undefined, 35)
 
       expect(activationRhythm(graph)).toBe(10)
     })
@@ -335,7 +335,7 @@ describe('temporalMetrics', () => {
       expect(temporalOverlapRatio(graph, 0, 100)).toBe(0)
 
       graph.insertNode('B')
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       expect(temporalOverlapRatio(graph, 0, 100)).toBe(0)
     })
 
@@ -351,9 +351,9 @@ describe('temporalMetrics', () => {
       // Overlapping pairs: 1
       // Ratio: 1/3 ≈ 0.333
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 15, 25)
-      graph.addTemporalEdge('A', 'C', 30, 40)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
+      graph.addTemporalEdge('A', 'C', 30, undefined, 40)
 
       // getEdgesInInterval(0, 50) returns all 3 edges
       // Edge 1 (10-20) and Edge 2 (15-25) overlap
@@ -377,8 +377,8 @@ describe('temporalMetrics', () => {
       graph.insertNode('C')
 
       // 2 activations, 1 deactivation in 1 minute
-      graph.addTemporalEdge('A', 'B', 0, 30000) // Activation at 0
-      graph.addTemporalEdge('B', 'C', 20000, 40000) // Activation at 20000, deactivation at 40000
+      graph.addTemporalEdge('A', 'B', 0, undefined, 30000) // Activation at 0
+      graph.addTemporalEdge('B', 'C', 20000, undefined, 40000) // Activation at 20000, deactivation at 40000
 
       // Window: 0-60000ms = 1 minute
       // Changes: 2 activations + 1 deactivation = 3 changes

@@ -26,11 +26,11 @@ describe('nodeMetrics', () => {
       graph.insertNode('C')
 
       // A -> B (10-20)
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       // B -> C (15-25)
-      graph.addTemporalEdge('B', 'C', 15, 25)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
       // A -> C (30-40)
-      graph.addTemporalEdge('A', 'C', 30, 40)
+      graph.addTemporalEdge('A', 'C', 30, undefined, 40)
 
       // Node A: 2 edges (A->B, A->C) in interval 0-50
       expect(temporalDegree(graph, 'A', 0, 50)).toBe(2)
@@ -47,8 +47,8 @@ describe('nodeMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 30, 40)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 30, undefined, 40)
 
       // getEdgesInInterval(25, 50) returns edges that overlap with the interval
       // The condition is: deactivated_at >= start && activated_at <= end
@@ -64,8 +64,8 @@ describe('nodeMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20) // B receives
-      graph.addTemporalEdge('B', 'A', 15, 25) // B sends
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20) // B receives
+      graph.addTemporalEdge('B', 'A', 15, undefined, 25) // B sends
 
       // Node B: 2 edges (incoming and outgoing)
       expect(temporalDegree(graph, 'B', 0, 50)).toBe(2)
@@ -84,8 +84,8 @@ describe('nodeMetrics', () => {
       graph.insertNode('C')
 
       // A's edges activate at: 10, 30
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('A', 'C', 30, 40)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('A', 'C', 30, undefined, 40)
 
       // Lifespan: 30 - 10 = 20ms
       expect(nodeLifespan(graph, 'A')).toBe(20)
@@ -95,7 +95,7 @@ describe('nodeMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
 
       // Lifespan: 10 - 10 = 0ms (same activation time)
       expect(nodeLifespan(graph, 'A')).toBe(0)
@@ -106,8 +106,8 @@ describe('nodeMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('A', 'C', 10, 25)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('A', 'C', 10, undefined, 25)
 
       // Lifespan: 10 - 10 = 0ms
       expect(nodeLifespan(graph, 'A')).toBe(0)
@@ -118,9 +118,9 @@ describe('nodeMetrics', () => {
       graph.insertNode('B')
 
       // A sends at 10
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       // A receives at 30
-      graph.addTemporalEdge('B', 'A', 30, 40)
+      graph.addTemporalEdge('B', 'A', 30, undefined, 40)
 
       // Lifespan: 30 - 10 = 20ms
       expect(nodeLifespan(graph, 'A')).toBe(20)
@@ -132,10 +132,10 @@ describe('nodeMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       expect(nodeBurstiness(graph, 'A')).toBe(0)
 
-      graph.addTemporalEdge('A', 'B', 30, 40)
+      graph.addTemporalEdge('A', 'B', 30, undefined, 40)
       expect(nodeBurstiness(graph, 'A')).toBe(0)
     })
 
@@ -146,9 +146,9 @@ describe('nodeMetrics', () => {
       // Regular intervals: 10, 20, 30 (deltas: 10, 10)
       // Mean: 10, Std: 0
       // Burstiness: (0 - 10) / (0 + 10) = -1
-      graph.addTemporalEdge('A', 'B', 10, 15)
-      graph.addTemporalEdge('A', 'B', 20, 25)
-      graph.addTemporalEdge('A', 'B', 30, 35)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 15)
+      graph.addTemporalEdge('A', 'B', 20, undefined, 25)
+      graph.addTemporalEdge('A', 'B', 30, undefined, 35)
 
       const burstiness = nodeBurstiness(graph, 'A')
       expect(burstiness).toBeCloseTo(-1, 2)
@@ -162,10 +162,10 @@ describe('nodeMetrics', () => {
       // Bursty: 10, 11, 12, 100 (deltas: 1, 1, 88)
       // Mean: ~30, Std: ~50
       // Burstiness should be positive (bursty)
-      graph.addTemporalEdge('A', 'B', 10, 15)
-      graph.addTemporalEdge('A', 'B', 11, 16)
-      graph.addTemporalEdge('A', 'B', 12, 17)
-      graph.addTemporalEdge('A', 'C', 100, 105)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 15)
+      graph.addTemporalEdge('A', 'B', 11, undefined, 16)
+      graph.addTemporalEdge('A', 'B', 12, undefined, 17)
+      graph.addTemporalEdge('A', 'C', 100, undefined, 105)
 
       const burstiness = nodeBurstiness(graph, 'A')
       // Should be positive (closer to 1 = more bursty)
@@ -178,9 +178,9 @@ describe('nodeMetrics', () => {
       graph.insertNode('B')
 
       // All at same time (deltas: 0, 0)
-      graph.addTemporalEdge('A', 'B', 10, 15)
-      graph.addTemporalEdge('A', 'B', 10, 16)
-      graph.addTemporalEdge('A', 'B', 10, 17)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 15)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 16)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 17)
 
       expect(nodeBurstiness(graph, 'A')).toBe(0)
     })
@@ -191,10 +191,10 @@ describe('nodeMetrics', () => {
       graph.insertNode('C')
 
       // A sends: 10, 20
-      graph.addTemporalEdge('A', 'B', 10, 15)
-      graph.addTemporalEdge('A', 'C', 20, 25)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 15)
+      graph.addTemporalEdge('A', 'C', 20, undefined, 25)
       // A receives: 30
-      graph.addTemporalEdge('B', 'A', 30, 35)
+      graph.addTemporalEdge('B', 'A', 30, undefined, 35)
 
       // Should calculate burstiness considering all edges
       const burstiness = nodeBurstiness(graph, 'A')

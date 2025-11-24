@@ -30,8 +30,8 @@ describe('graphMetrics', () => {
       // 2 edges in interval
       // Max possible: 3 * 2 = 6 (directed, no self-loop)
       // Density: 2/6 = 1/3 ≈ 0.333
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 15, 25)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
 
       const density = temporalDensity(graph, 0, 50)
       expect(density).toBeCloseTo(1 / 3, 2)
@@ -43,8 +43,8 @@ describe('graphMetrics', () => {
 
       // Max possible: 2 * 1 = 2
       // 2 edges = complete
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'A', 15, 25)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'A', 15, undefined, 25)
 
       const density = temporalDensity(graph, 0, 50)
       expect(density).toBe(1)
@@ -55,8 +55,8 @@ describe('graphMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 30, 40) // Outside interval
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 30, undefined, 40) // Outside interval
 
       // Window: 0-25, only 1 edge
       // Density: 1/6 ≈ 0.167
@@ -73,9 +73,9 @@ describe('graphMetrics', () => {
       // 3 edges
       // Max possible: 4 * 3 = 12
       // Density: 3/12 = 0.25
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 15, 25)
-      graph.addTemporalEdge('C', 'D', 20, 30)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
+      graph.addTemporalEdge('C', 'D', 20, undefined, 30)
 
       const density = temporalDensity(graph, 0, 50)
       expect(density).toBe(0.25)
@@ -91,7 +91,7 @@ describe('graphMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       expect(edgeOverlapCount(graph)).toBe(0)
     })
 
@@ -104,9 +104,9 @@ describe('graphMetrics', () => {
       // Edge 2: 15-25 (overlaps with 1: 15-20)
       // Edge 3: 30-40 (no overlap)
       // Overlaps: 1 pair (1-2)
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 15, 25)
-      graph.addTemporalEdge('A', 'C', 30, 40)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
+      graph.addTemporalEdge('A', 'C', 30, undefined, 40)
 
       expect(edgeOverlapCount(graph)).toBe(1)
     })
@@ -119,9 +119,9 @@ describe('graphMetrics', () => {
 
       // All edges overlap: 10-20, 15-25, 12-22
       // Pairs: (1-2), (1-3), (2-3) = 3 overlaps
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 15, 25)
-      graph.addTemporalEdge('C', 'D', 12, 22)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 15, undefined, 25)
+      graph.addTemporalEdge('C', 'D', 12, undefined, 22)
 
       expect(edgeOverlapCount(graph)).toBe(3)
     })
@@ -132,8 +132,8 @@ describe('graphMetrics', () => {
       graph.insertNode('C')
 
       // No overlaps (20 < 30, so they don't touch)
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 30, 40)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 30, undefined, 40)
 
       expect(edgeOverlapCount(graph)).toBe(0)
     })
@@ -145,7 +145,7 @@ describe('graphMetrics', () => {
 
       // Edge 1: 10-20
       // Edge 2: 15-∞ (overlaps with 1)
-      graph.addTemporalEdge('A', 'B', 10, 20)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
       graph.addTemporalEdge('B', 'C', 15) // No deactivation
 
       expect(edgeOverlapCount(graph)).toBe(1)
@@ -159,8 +159,8 @@ describe('graphMetrics', () => {
       // Edge 1: 10-20
       // Edge 2: 20-30 (touches at 20, which counts as overlap)
       // The condition aEnd >= bStart is true (20 >= 20)
-      graph.addTemporalEdge('A', 'B', 10, 20)
-      graph.addTemporalEdge('B', 'C', 20, 30)
+      graph.addTemporalEdge('A', 'B', 10, undefined, 20)
+      graph.addTemporalEdge('B', 'C', 20, undefined, 30)
 
       expect(edgeOverlapCount(graph)).toBe(1)
     })
@@ -179,8 +179,8 @@ describe('graphMetrics', () => {
       graph.insertNode('C')
 
       // 2 edges in 1 minute (60000ms)
-      graph.addTemporalEdge('A', 'B', 0, 30000)
-      graph.addTemporalEdge('B', 'C', 10000, 40000)
+      graph.addTemporalEdge('A', 'B', 0, undefined, 30000)
+      graph.addTemporalEdge('B', 'C', 10000, undefined, 40000)
 
       // Window: 0-60000ms = 1 minute
       // Velocity: 2 edges / 1 minute = 2 edges/min
@@ -193,7 +193,7 @@ describe('graphMetrics', () => {
       graph.insertNode('B')
 
       // 1 edge in 30 seconds (30000ms)
-      graph.addTemporalEdge('A', 'B', 0, 15000)
+      graph.addTemporalEdge('A', 'B', 0, undefined, 15000)
 
       // Window: 0-30000ms = 0.5 minutes
       // Velocity: 1 edge / 0.5 minute = 2 edges/min
@@ -206,8 +206,8 @@ describe('graphMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      graph.addTemporalEdge('A', 'B', 0, 30000)
-      graph.addTemporalEdge('B', 'C', 70000, 100000) // Outside interval
+      graph.addTemporalEdge('A', 'B', 0, undefined, 30000)
+      graph.addTemporalEdge('B', 'C', 70000, undefined, 100000) // Outside interval
 
       // Window: 0-60000ms = 1 minute
       // Only 1 edge in interval
@@ -220,7 +220,7 @@ describe('graphMetrics', () => {
       graph.insertNode('A')
       graph.insertNode('B')
 
-      graph.addTemporalEdge('A', 'B', 100000, 200000)
+      graph.addTemporalEdge('A', 'B', 100000, undefined, 200000)
 
       // Window: 0-60000ms, no edges
       expect(interactionVelocity(graph, 0, 60000)).toBe(0)
