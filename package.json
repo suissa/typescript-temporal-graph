@@ -1,6 +1,5 @@
 {
-  "name": "typescript-graph",
-  "homepage": "https://segfaultx64.github.io/typescript-graph/",
+  "name": "@puere/tempograph",
   "version": "0.3.0",
   "description": "",
   "keywords": [],
@@ -120,6 +119,6 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "object-hash": "^2.0.3"
+    "object-hash": "^2.2.0"
   }
 }
