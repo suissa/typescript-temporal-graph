@@ -376,15 +376,15 @@ describe('temporalMetrics', () => {
       graph.insertNode('B')
       graph.insertNode('C')
 
-      // 2 activations, 1 deactivation in 1 minute
-      graph.addTemporalEdge('A', 'B', 0, undefined, 30000) // Activation at 0
+      // 2 activations, 2 deactivations in 1 minute
+      graph.addTemporalEdge('A', 'B', 0, undefined, 30000) // Activation at 0, deactivation at 30000
       graph.addTemporalEdge('B', 'C', 20000, undefined, 40000) // Activation at 20000, deactivation at 40000
 
       // Window: 0-60000ms = 1 minute
-      // Changes: 2 activations + 1 deactivation = 3 changes
-      // Rate: 3 changes / 1 minute = 3 changes/min
+      // Changes: 2 activations (0, 20000) + 2 deactivations (30000, 40000) = 4 changes
+      // Rate: 4 changes / 1 minute = 4 changes/min
       const rate = temporalChangeRate(graph, 0, 60000)
-      expect(rate).toBeCloseTo(3, 1)
+      expect(rate).toBeCloseTo(4, 1)
     })
   })
 })
