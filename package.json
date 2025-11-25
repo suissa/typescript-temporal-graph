@@ -26,7 +26,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "npx rimraf dist && tsc",
     "dev": "tsc --watch",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
