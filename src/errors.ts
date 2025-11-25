@@ -31,7 +31,7 @@ export class NodeAlreadyExistsError<T> extends Error {
  *
  * @category Errors
  */
-export class NodeDoesntExistError<T> extends Error {
+export class NodeDoesntExistError<T = any> extends Error {
   public identity: string
 
   constructor(identity: string) {
